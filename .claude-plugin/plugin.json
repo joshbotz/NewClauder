@@ -1,7 +1,7 @@
 {
   "name": "new-clauder",
-  "version": "1.0.0",
-  "description": "A friendly, role-aware onboarding tour for people brand-new to Claude Code — built for IT and InfoSec folks who are also new to AI agents.",
+  "version": "2.0.0",
+  "description": "NewClauder — a friendly, role-aware first session for people brand-new to Claude Code. Built for IT and InfoSec folks new to AI agents.",
   "author": {
     "name": "Josh Botz",
     "url": "https://github.com/botz-pillar"

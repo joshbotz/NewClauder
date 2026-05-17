@@ -1,5 +1,37 @@
 # Changelog
 
+## 2.0.0 — 2026-05-16
+
+**Breaking change:** plugin renamed from `claude-code-tour` to NewClauder. New install commands required for anyone running v1.x.
+
+**Renames:**
+- Display name: Claude Code Tour → **NewClauder**
+- Technical identifier: `claude-code-tour` → `new-clauder` (kebab-case convention)
+- GitHub repo: `botz-pillar/claude-code-tour` → **`botz-pillar/NewClauder`**
+- Skill directory: `skills/claude-code-tour/` → `skills/new-clauder/`
+
+**New install commands:**
+```
+/plugin marketplace add botz-pillar/NewClauder
+/plugin install new-clauder@new-clauder
+```
+
+Anyone with v1.x installed should uninstall (`/plugin uninstall claude-code-tour`) and reinstall under the new name.
+
+**Reference files refreshed for v1.2 safety/voice consistency:**
+- `references/concepts.md` — added a dedicated **Prompt Injection** section as the defining new risk class of agentic AI tools, with the "if Claude proposes something that doesn't match what you asked for after reading untrusted input, that's the signature of an injection attempt" detection cue. Expanded the **Tools** section with tool-execution-honesty framing (commands run with the user's full permissions). Promoted **Plan mode** to "recommended for first session and unfamiliar data." Added a **Folders and projects** section. Added a **Trust note** to Skills covering pre-install script audit. Added MCP-server supply-chain framing. Updated **Where does my data go** with the Commercial-vs-Consumer Terms split.
+- `references/install.md` — added the pre-install checks (work-laptop/sensitive-data/MDM/DLP/EDR), the "Claude Code requires a paid plan" disclosure with Pro/Max/API options, the "try free claude.ai first" sidebar, Windows/Linux install paths for the terminal version, the `/help` confirmation test.
+- `references/where-am-i.md` — minor consistency pass for NewClauder brand and the cost split (free Claude ≠ Claude Code).
+- `references/starter-prompts.md` — added plan-mode safety hint to SOC prompts that handle potentially untrusted content (phishing emails, decoded payloads).
+
+**Metadata:**
+- `plugin.json` description tightened to match the NewClauder voice
+- `marketplace.json` description tightened similarly
+
+Anyone reviewing the plugin source for security before installing will find every file in the repo is plain markdown — no scripts, no network calls. Standard practice: read every plugin before you install it.
+
+
+
 ## 1.2.0 — 2026-05-16
 
 Significant README rewrite incorporating two rounds of battle-test review.

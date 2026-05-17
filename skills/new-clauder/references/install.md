@@ -6,6 +6,31 @@ If they are already chatting with you in Claude Code, they are already inside it
 
 ---
 
+## Pre-install checks (especially for InfoSec audiences)
+
+Before they touch the installer:
+
+- **Work laptop with corporate management?** Stop and ask IT/security. Most companies now have a vendor-approval process for AI tools, and MDM/DLP/EDR agents may block the install or log every file Claude reads.
+- **Sensitive data on the machine** — client files, PHI, regulated material, NDA-protected docs? Same answer.
+- **Personal machine + non-sensitive learning?** Continue.
+- **Personal machine + work data in the folder?** Treat it like a work laptop.
+
+---
+
+## Heads up: Claude Code requires a paid Claude plan
+
+The free Claude plan at claude.ai does **not** include Claude Code. To use it, the user needs one of:
+
+- **[Claude Pro](https://www.anthropic.com/pricing)** — about $20/month. The entry point. Plenty for learning, light/moderate daily use, most personal projects. Default recommendation.
+- **[Claude Max](https://www.anthropic.com/pricing)** — tiered, starts around $100/month. For daily-driver power users with substantially higher limits. Not where beginners should start.
+- **API credits** — pay-as-you-go via [console.anthropic.com](https://console.anthropic.com/). Useful for people who'd rather meter by tokens than commit monthly.
+
+Surface this *before* they create an Anthropic account, not after — saves the "wait, I have to pay?" moment.
+
+If they're hesitant, suggest they try the free chat at [claude.ai](https://claude.ai) for a few days first to see if they like how Claude thinks. The free plan won't run Claude Code (the agent on their machine), but it's the same brain — paid plan unlocks the hands.
+
+---
+
 ## If they genuinely haven't installed yet
 
 Ask which OS: **macOS, Windows, or Linux.**
@@ -14,24 +39,27 @@ Ask which OS: **macOS, Windows, or Linux.**
 
 Two ways:
 
-1. **The app** — download the Claude Code desktop app from `claude.com/claude-code`. Easiest path for non-CLI users. Open it, sign in, you're in.
+1. **The desktop app** — download from `claude.com/claude-code`. **Recommended for non-developers.** Open it, sign in, done. No Node, no npm, no Homebrew.
 2. **The CLI** — if they want the terminal version:
    ```
    npm install -g @anthropic-ai/claude-code
    ```
-   This needs Node.js installed (which gives them `npm`). Easiest install is via Homebrew:
+   Requires Node.js. Easiest install via Homebrew:
    ```
    brew install node
    ```
    Then run `claude` in any terminal.
 
-If they don't have Homebrew, that's a longer detour — link them to `brew.sh` and offer to walk through it, but suggest the desktop app instead if they're not committed to the CLI path.
+If they don't have Homebrew, point them to `brew.sh` and offer to walk through it — but suggest the desktop app instead if they're not committed to the CLI path.
 
 ### Windows
 
-The desktop app is the path of least resistance — same URL.
+Two ways:
 
-If they want the CLI, recommend WSL (Windows Subsystem for Linux) + Node, but flag that as a "set aside an hour" project. For a new user, the app is fine.
+1. **The desktop app** — same URL: `claude.com/claude-code`. Recommended path.
+2. **The CLI** — needs Node.js. Install via [winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/) (`winget install OpenJS.NodeJS`) or download from [nodejs.org](https://nodejs.org/). Then run `claude` in PowerShell or Windows Terminal.
+
+WSL (Windows Subsystem for Linux) is an option for terminal die-hards but flag it as a "set aside an hour" project for newcomers.
 
 ### Linux
 
@@ -46,18 +74,11 @@ After install, they should be able to:
 1. Open the app (or run `claude` in a terminal).
 2. Sign in with their Anthropic account.
 3. See a chat prompt waiting for input.
+4. Type `/help` and see a menu pop up (this is the decisive test — if `/help` shows a menu, they're in Claude Code).
 
-If any of those don't happen, ask what they see and troubleshoot from there.
+If `/help` does nothing or just prints `/help` as text, they're probably in claude.ai (the browser chat) — not Claude Code. Point them to the desktop app.
 
----
-
-## Should they even install it?
-
-A fair question for some users. Quick sanity check:
-
-- **Work laptop with strict controls?** Check with IT/security before installing anything that calls outbound to Anthropic. Many orgs have a vendor-approval process. Don't bypass it.
-- **Sensitive data on the machine?** Same answer.
-- **Personal machine, learning purposes?** Go for it. The desktop app is the safest starting point.
+If the app prompts for admin rights during install and they're on a managed laptop, stop. Do not enter someone else's credentials. Send them back to the pre-install check.
 
 ---
 

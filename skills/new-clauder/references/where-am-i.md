@@ -1,6 +1,6 @@
 # "Where am I running this?" — surface-by-surface reference
 
-Most newcomer confusion isn't about *what Claude does*, it's about *which Claude they're in*. Use this reference any time the user gets tangled up between Claude Code (this chat), regular Claude (the website), and the various ways to run Claude Code itself.
+Most newcomer confusion isn't about *what Claude does*, it's about *which Claude they're in*. Use this reference any time the user gets tangled up between Claude Code (this chat, where NewClauder lives), regular Claude (the website), and the various ways to run Claude Code itself.
 
 Read the section that matches what the user reports seeing.
 
@@ -27,7 +27,7 @@ A Mac or Windows app. Looks like a regular app on your computer. Has a folder pi
 - Terminal commands: ✅ (Claude runs them after you approve)
 - Internet access: ✅ (only when Claude asks for it and you allow it)
 
-Get it: `claude.com/claude-code`
+Get it: `claude.com/claude-code`. Requires a paid Anthropic plan (Pro ~$20/mo or higher).
 
 ### Claude Code — terminal / CLI
 
@@ -46,11 +46,13 @@ An extension that puts Claude Code into the editor you already use. Skip this un
 
 The chat window in your web browser at `claude.ai`. This is normal Claude — great for asking questions and getting written work — but it does **not** run on your computer, does **not** edit files on your disk, and does **not** support slash commands or skills.
 
+The free Claude plan lives here. NewClauder and Claude Code are not on the free plan.
+
 If you opened this tour expecting it to work in claude.ai: it won't fully. You need Claude Code.
 
 ### Claude in the iPhone or Android app
 
-Same as claude.ai — a chat, no file access, no slash commands. Useful for quick questions on the go. Not where the tour lives.
+Same as claude.ai — a chat, no file access, no slash commands. Useful for quick questions on the go. Not where NewClauder lives.
 
 ---
 
@@ -64,7 +66,7 @@ Same as claude.ai — a chat, no file access, no slash commands. Useful for quic
 
 ## "Where do shell commands run?"
 
-When Claude runs a shell command (like `ls`, `git status`, `python script.py`), it runs **on your computer**, in **the folder you opened**.
+When Claude runs a shell command (like `ls`, `git status`, `python script.py`), it runs **on your computer**, in **the folder you opened**, with **your user's full permissions**.
 
 - Desktop app → in the folder you picked
 - Terminal → in the folder you launched `claude` from
@@ -103,7 +105,6 @@ To open it:
 To read `.md` files comfortably (they're plain text but look prettier in a real reader): install one of these free apps:
 
 - **Obsidian** — free, cross-platform, what most people use: `obsidian.md`
-- **Typora** — clean, simple, free trial: `typora.io`
 - **VS Code** — free, has a built-in Markdown preview (Ctrl/Cmd + Shift + V): `code.visualstudio.com`
 
 You can also drag any `.md` file into a browser tab and it'll display as plain text — readable, just not pretty.

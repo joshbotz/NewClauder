@@ -1,15 +1,17 @@
 # Starter prompts — by role
 
-A handout for users finishing the tour. When the user reaches the 5-minute exit ritual, extract the 10 prompts for their role from this file, write them to `~/Documents/claude-code-starter-prompts.md`, tell them the full path, and offer to open it.
+A handout for users finishing the tour. When the user reaches the 5-minute exit ritual, extract the 10 prompts for their role from this file, write them to `~/Documents/newclauder-starter-prompts.md`, tell them the full path, and offer to open it.
 
 These are written in the user's voice — what they would type to Claude Code — not in Claude's voice. The point is to remove "what do I even ask for?" friction the day after the tour.
+
+**Safety-conscious tip baked into several prompts:** when working with potentially untrusted content (logs from unknown sources, files received via email, web pages), suggest the user start in plan mode (`/permissions`) so nothing executes automatically.
 
 ---
 
 ## SOC / security ops
 
-1. "Here's a phishing email — full headers and body pasted below. Triage it: verdict, IOCs, why it's suspicious, what to tell the reporter."
-2. "Decode this base64 PowerShell blob without running it. Walk me through what it would do, flag the malicious bits, save your analysis to a file."
+1. "Here's a phishing email — full headers and body pasted below. Triage it: verdict, IOCs, why it's suspicious, what to tell the reporter. Start in plan mode."
+2. "Decode this base64 PowerShell blob without running it (plan mode). Walk me through what it would do, flag the malicious bits, save your analysis to a file."
 3. "Read every Zeek log in this folder and rank source IPs by suspicion. Output a CSV I can hand to triage."
 4. "Draft a Sigma rule, a Splunk SPL, and a KQL version for this CVE. Lint them against any existing rules in `./rules/`."
 5. "Turn my IR runbook into a checklist for a specific scenario: ransomware on one endpoint, after-hours, single analyst on shift."

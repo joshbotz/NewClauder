@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "new-clauder",
-  "description": "new-clauder — A friendly, role-aware onboarding tour for people brand-new to Claude Code.",
+  "name": "NewClauder",
+  "description": "NewClauder — a friendly, role-aware first session for people brand-new to Claude Code.",
   "owner": {
     "name": "Josh Botz",
     "url": "https://github.com/botz-pillar"

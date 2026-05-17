@@ -33,7 +33,27 @@ Every tool call shows up in the chat. You see what Claude is about to do before 
 
 **Why it matters:** Claude without tools is a chatbot. Claude with tools changes files on your machine and runs real commands. That is the whole power — and the whole risk.
 
-**InfoSec example:** "Run `netstat -an` and tell me which ports are listening" — Claude proposes the command, you approve, output comes back, Claude explains it.
+**The honest version of what tool execution means:** when you approve a Claude Code shell command, it runs with *your user's full permissions* on this machine — same as if you typed it yourself. Approving `rm -rf` deletes files. Approving "curl this URL and pipe it to bash" runs whatever that script says. There's no sandbox between Claude and your filesystem; the approval prompt *is* the safety layer. Read the proposed command before you say yes.
+
+**InfoSec example:** "Run `netstat -an` and tell me which ports are listening" — Claude proposes the command, you approve, output comes back, Claude explains it. If instead it proposed something destructive based on misreading your intent, the approval gate is what catches it.
+
+---
+
+## Prompt injection (the new risk class)
+
+A risk that's specific to AI agents and worth understanding before you let one near anything important.
+
+**What it is:** Claude reads file contents and web pages as both *data* (information to think about) AND *instructions* (things to act on). A malicious file or webpage can include text that tries to redirect Claude into doing something you didn't ask for — install malware, exfiltrate data, run a destructive command, you name it. The technical name is *prompt injection*. It's the defining new threat class for agentic AI tools in 2026.
+
+**The tell:** if Claude proposes an action that doesn't match what you originally asked for *after it just read a file or visited a URL*, that's the signature of an injection attempt. Stop and check before approving.
+
+**Mitigations:**
+- Use **plan mode** (`/permissions`) for first sessions and any session pointed at unfamiliar data — Claude can read and propose but can't act.
+- Read every command before approving. Especially when Claude has just consumed untrusted input.
+- Don't auto-approve everything just to move faster.
+- For high-stakes work (production systems, sensitive data), don't run Claude Code there at all.
+
+**InfoSec framing:** This maps to OWASP LLM01 (Prompt Injection) and OWASP Agentic AI Threats T1/T6 (indirect prompt injection via tool surfaces). It's not theoretical — it's been demonstrated repeatedly against production agentic systems.
 
 ---
 
@@ -43,14 +63,34 @@ Claude asks before anything risky. Four behavior modes you'll see:
 
 - **default** — ask before risky actions. Use this until you have a feel for the tool.
 - **acceptEdits** — auto-approve file edits, still ask for shell commands. Good for focused coding sessions.
-- **bypassPermissions** — auto-approve everything. Only ever use this in a throwaway environment (a fresh VM you can wipe). Never on a real work machine.
-- **plan** — read-only mode. Claude can explore and propose but cannot change anything until you exit plan mode. **This is the underrated one — use it whenever you're nervous.**
+- **bypassPermissions** — auto-approve everything. Only ever use this in a throwaway environment (a fresh VM you can wipe). Never on a real work machine. Removes the prompt-injection mitigation entirely.
+- **plan** — read-only mode. Claude can explore and propose but cannot change anything until you exit plan mode. **Recommended for your first session and any session pointed at unfamiliar data.**
 
 Set the mode with `/permissions`.
 
 Permanent allow/deny rules live in `settings.json` (a config file in `~/.claude/` on your machine or `.claude/` inside a project). You usually don't edit it by hand — Claude offers to add rules as you approve commands.
 
 **InfoSec example:** Working in a folder of real production logs? Start in **plan mode**. Claude can read and analyze but can't accidentally modify or delete anything. Switch out only when you're ready to act.
+
+**Plan mode is not a sandbox.** It's a review gate. It stops Claude from acting, but if you approve a bad plan, the bad plan runs. The control is the human reading the plan before approving — *you*.
+
+---
+
+## Folders and projects
+
+Claude Code thinks about ONE folder at a time. That folder — and everything inside it — is what Claude can see and touch.
+
+**To switch projects:** open a different folder.
+
+- Desktop app → folder picker, open a different folder
+- Terminal → `cd /path/to/other/project` then run `claude` again
+- Editor extension → open the other project in your editor
+
+There's no `cd` mid-session that flips Claude's whole world. One folder per session.
+
+**Why it matters:** when you ask Claude to "read all files in this folder," it really means the folder you opened. Files outside that folder are invisible to it unless you give an explicit absolute path. This is the safety boundary — Claude can't accidentally rummage through your whole disk.
+
+**Pro tip:** put a `CLAUDE.md` in each project folder. It teaches Claude about that specific project — conventions, gotchas, what not to touch. Claude reads it automatically at session start.
 
 ---
 
@@ -69,6 +109,8 @@ Useful ones:
 
 Slash commands are NOT shell commands. `/ls` does not list files. To run a shell command directly, type `!ls`.
 
+Slash commands work in Claude Code (desktop, terminal, IDE extension). They do **not** work in claude.ai (the browser chat).
+
 ---
 
 ## Skills
@@ -80,6 +122,8 @@ A skill is a folder of instructions (and sometimes scripts) that teaches Claude 
 **Why they matter:** Specialization without bloat. A "phishing-triage" skill exists dormant until you paste an email header. A "soc2-evidence" skill stays out of the way until you mention an audit. You can install many; the right one shows up when needed.
 
 **InfoSec example:** A "log-triage" skill that knows your SIEM's quirks, your IR runbook format, and your ticket template — fires whenever you start an investigation, stays silent otherwise.
+
+**Trust note:** skills can include scripts that execute on your machine. Read every skill before installing it — the SKILL.md and any scripts under `scripts/`. NewClauder is just markdown, no scripts; not every skill is.
 
 ---
 
@@ -109,6 +153,8 @@ Once configured, those tools show up alongside the built-in ones. Claude can `gi
 - Notion / Confluence MCP → pull runbooks into context
 - Jira / ServiceNow MCP → file and update tickets
 
+**Each MCP server is its own trust decision.** Same way every plugin is. They add tool surface area to your Claude Code session — meaning more things prompt injection can try to hijack. Pick servers from trustworthy sources, audit their permissions, and don't connect everything just because you can.
+
 ---
 
 ## Hooks
@@ -132,11 +178,13 @@ Defined in `settings.json`. The harness — the program running Claude Code on y
 Two related but distinct things:
 
 - **`CLAUDE.md`** — a file in a project directory that teaches Claude about *that project*. Conventions, gotchas, what not to touch, where things live. Loaded automatically when a session starts in that folder.
-- **Memory** — persistent notes about *you* that survive across sessions. Lives in `~/.claude/`. Used for things like your role, preferences, recurring context.
+- **Memory** — persistent notes about *you* that survive across sessions. Lives in `~/.claude/memory/`. Used for things like your role, preferences, recurring context.
 
 **Why they matter:** Without these, every session starts from zero. With them, Claude shows up already knowing the project and the person.
 
 **InfoSec example:** A `CLAUDE.md` in your IR notebook folder that says: "This folder contains incident data. Default to plan mode. Never `rm` anything. All findings get appended to `findings.md`, not overwritten." That preamble travels with the folder.
+
+**NewClauder writes one memory note at the end of the tour** — your role, your terminal comfort, the first artifact you produced, and your chosen next step. No conversation content. You can read or delete it any time at `~/.claude/memory/user_claude_code_onboarding.md`.
 
 ---
 
@@ -145,8 +193,9 @@ Two related but distinct things:
 The most common silent question from an InfoSec audience. Brief answer:
 
 - Your messages and the files Claude reads go to Anthropic for the model to process.
-- By default, API and Claude Code traffic is **not** used to train models. (Verify on the Anthropic Trust Center — it's the source of truth.)
+- By default, **Claude Code traffic is not used to train Anthropic's models.** (Verify on the Anthropic Trust Center — it's the source of truth.)
 - Treat this like any cloud tool: do not paste secrets, credentials, customer data, PHI, or classified material without first checking your org's policy and any data-processing agreement.
 - For high-sensitivity work, ask your security team whether your org has an enterprise agreement with zero-retention guarantees.
+- The legal contract depends on your plan: Pro/Max/Team/Enterprise are under [Anthropic's Commercial Terms](https://www.anthropic.com/legal/commercial-terms); the free Claude (which can't run Claude Code anyway) is under [Consumer Terms](https://www.anthropic.com/legal/consumer-terms).
 
 When in doubt, redact before pasting.
